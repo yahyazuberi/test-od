@@ -2,20 +2,20 @@ import numpy as np
 import cv2
 from PIL import Image
 
-def mainDetector(h):
+def mainDetector(h,userId):
     
     confidenceThreshold = 0.5
     NMSThreshold = 0.3
 
     modelConfiguration = 'cfg/yolov3.cfg'
-    modelWeights = 'yolov4-obj_last.weights'
+    modelWeights = 'yolov4-obj_last_carton.weights'
 
     labelsPath = 'coco.names'
     labels = open(labelsPath).read().strip().split('\n')
 
     np.random.seed(10)
     COLORS = np.random.randint(0, 255, size=(len(labels), 3), dtype="uint8")
-
+    
     net = cv2.dnn.readNetFromDarknet(modelConfiguration, modelWeights)
 
     image = cv2.imread(h)
@@ -58,10 +58,15 @@ def mainDetector(h):
             (w, h) = (boxes[i][2], boxes[i][3])
             count=count+1
             color = [int(c) for c in COLORS[classIDs[i]]]
-            cv2.rectangle(image, (x, y), (x + w, y + h), color, 2)
+            cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 0), 2)
             text = '{}: {:.4f}'.format(labels[classIDs[i]], confidences[i])
             cv2.putText(image, text, (x, y - 5), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
     #cv2.imshow('Image', image)
     #cv2.waitKey(0)
-    return count
+    #return send_file(image,as_attachment=True,attachment_filename='test.jpg',mimetype='image/jpeg')
+    img = Image.fromarray(image, 'RGB')
+    file=img
+    file.save('images/test'+userId+'.jpg')
+    return True
+    
