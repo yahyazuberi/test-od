@@ -4,7 +4,7 @@ from PIL import Image
 
 def mainDetector(h,userId):
     
-    confidenceThreshold = 0.5
+    confidenceThreshold = 0.80
     NMSThreshold = 0.3
 
     modelConfiguration = 'cfg/yolov3.cfg'
@@ -65,7 +65,10 @@ def mainDetector(h,userId):
     #cv2.imshow('Image', image)
     #cv2.waitKey(0)
     #return send_file(image,as_attachment=True,attachment_filename='test.jpg',mimetype='image/jpeg')
-    img = Image.fromarray(image, 'RGB')
+    
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    img=cv2.putText(image,'COUNT:'+str(count),(10,50), font, 1,(0,0,0),2)
+    img = Image.fromarray(img, 'RGB')
     file=img
     file.save('images/test'+userId+'.jpg')
     return True
